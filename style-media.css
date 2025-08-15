@@ -1,0 +1,71 @@
+/* --------------------------
+   SAFE Typing + Shimmer CSS
+   Add at the end of your stylesheet
+   -------------------------- */
+
+/* Keep base H2 visible and non-destructive */
+.hero-content h2 {
+    display: inline-block;     /* keep it inline with content and safe */
+    vertical-align: bottom;
+    white-space: nowrap;
+    overflow: hidden;
+    color: var(--text-clr);    /* ensure text is visible by default */
+    padding-right: 0.2rem;
+}
+
+/* The inner span that the JS writes into */
+.hero-content h2 .typed {
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: bottom;
+    color: inherit;            /* inherits var(--text-clr) */
+    transition: color 160ms ease;
+}
+
+/* Cursor: attached to the H2 parent (independent of text color/shimmer) */
+.hero-content h2.typing-parent::after {
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: 1.05em;
+    margin-left: 6px;
+    vertical-align: bottom;
+    background: var(--global-clr);
+    border-radius: 1px;
+    animation: safe-blink 900ms steps(2, start) infinite;
+}
+@keyframes safe-blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Shimmer applied ONLY to the .typed span — removed before deleting starts */
+.hero-content h2 .typed.shimmer-active {
+    background: linear-gradient(
+        90deg,
+        var(--global-clr),
+        #7adcff,
+        #fff176,
+        #ff9f66,
+        var(--global-clr)
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; /* only while shimmer runs */
+    background-clip: text;
+    color: transparent;
+    animation: safe-shimmer 900ms linear;
+}
+@keyframes safe-shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+/* Keep font sizing responsive and avoid wide min-widths that break layout */
+@media (max-width: 768px) {
+    .hero-content h2 { font-size: 1.4rem; }
+}
+@media (max-width: 480px) {
+    .hero-content h2 { font-size: 1.2rem; }
+}
